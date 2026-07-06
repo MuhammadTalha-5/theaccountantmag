@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mail, Rss } from "lucide-react";
 import { LinkedinIcon, XTwitterIcon } from "@/components/ui/SocialIcons";
+import Logo from "@/components/layout/Logo";
 import Container from "@/components/ui/Container";
 import NewsletterSignup from "@/components/ui/NewsletterSignup";
 import type { NavItem } from "@/types";
@@ -14,9 +15,8 @@ export default function Footer({ items }: { items: NavItem[] }) {
         <div className="grid gap-12 lg:grid-cols-12">
           {/* Masthead + mission */}
           <div className="lg:col-span-4">
-            <p className="font-display text-2xl font-bold tracking-tight text-paper">
-              The&nbsp;Accountant
-              <span aria-hidden className="ml-2 inline-block h-2 w-2 rounded-full bg-brass-500" />
+            <p className="text-paper">
+              <Logo tagline />
             </p>
             <p className="mt-4 max-w-sm font-serif text-[0.95rem] leading-relaxed text-ink-300">
               Independent journalism on the numbers that run the world — audit,

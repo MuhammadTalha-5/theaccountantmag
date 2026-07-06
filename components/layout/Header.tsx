@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, Moon, Search, Sun, X } from "lucide-react";
 import { useTheme } from "@/components/layout/ThemeProvider";
+import Logo from "@/components/layout/Logo";
 import Container from "@/components/ui/Container";
 import { cn } from "@/lib/utils";
 import type { NavItem } from "@/types";
@@ -60,21 +61,10 @@ export default function Header({ items }: { items: NavItem[] }) {
           {/* Masthead */}
           <Link
             href="/"
-            className="group flex shrink-0 items-baseline gap-2"
+            className="group shrink-0 transition-opacity hover:opacity-80"
             aria-label="The Accountant — home"
           >
-            <span
-              className={cn(
-                "font-display font-bold tracking-tight transition-all duration-300",
-                compact ? "text-xl" : "text-2xl md:text-[1.7rem]"
-              )}
-            >
-              The&nbsp;Accountant
-            </span>
-            <span
-              aria-hidden
-              className="hidden h-2 w-2 rounded-full bg-brass-500 transition-transform duration-300 group-hover:scale-150 sm:block"
-            />
+            <Logo compact={compact} tagline />
           </Link>
 
           {/* Desktop nav */}
