@@ -10,10 +10,11 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import ArticleCard from "@/components/article/ArticleCard";
 import ReadingProgress from "@/components/article/ReadingProgress";
 import ShareButtons from "@/components/article/ShareButtons";
-import { formatDate, getAllArticles, getArticleBySlug, getRelatedArticles } from "@/lib/api";
+import { getAllArticles, getArticleBySlug, getRelatedArticles } from "@/lib/api";
+import { formatDate } from "@/lib/utils";
 
-export function generateStaticParams() {
-  return getAllArticles().map((a) => ({ slug: a.slug }));
+export async function generateStaticParams() {
+  return (await getAllArticles()).map((a) => ({ slug: a.slug }));
 }
 
 export async function generateMetadata({
@@ -22,7 +23,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
   if (!article) return {};
   return { title: article.title, description: article.excerpt };
 }
@@ -33,12 +34,12 @@ export default async function ArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
   const img = article.featuredImage.node;
   const author = article.author.node;
-  const related = getRelatedArticles(article, 3);
+  const related = await getRelatedArticles(article, 3);
 
   return (
     <>

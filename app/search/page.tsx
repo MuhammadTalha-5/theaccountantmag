@@ -8,7 +8,11 @@ export const metadata: Metadata = {
   description: "Search The Accountant's archive of stories.",
 };
 
-export default function SearchPage() {
+export default async function SearchPage() {
+  const [articles, categories] = await Promise.all([
+    getAllArticles(),
+    getAllCategories(),
+  ]);
   return (
     <Container className="pt-12">
       <header className="mx-auto mb-10 max-w-2xl text-center">
@@ -19,7 +23,7 @@ export default function SearchPage() {
           Search
         </h1>
       </header>
-      <SearchClient articles={getAllArticles()} categories={getAllCategories()} />
+      <SearchClient articles={articles} categories={categories} />
     </Container>
   );
 }

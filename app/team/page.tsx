@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Container from "@/components/ui/Container";
 import TeamMemberCard from "@/components/team/TeamMemberCard";
-import { team } from "@/lib/data/team";
+import { getTeamMembers } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "About & Team",
@@ -9,7 +9,8 @@ export const metadata: Metadata = {
     "The people behind The Accountant — independent journalism on the numbers that run the world.",
 };
 
-export default function TeamPage() {
+export default async function TeamPage() {
+  const team = await getTeamMembers();
   return (
     <Container className="pt-12">
       {/* About the magazine */}

@@ -13,13 +13,19 @@ import {
   getSecondaryFeatures,
 } from "@/lib/api";
 
-export default function HomePage() {
-  const lead = getLeadStory();
-  const secondary = getSecondaryFeatures(4);
-  const picks = getEditorsPicks(4);
+export default async function HomePage() {
+  const lead = await getLeadStory();
+  const secondary = await getSecondaryFeatures(4);
+  const picks = await getEditorsPicks(4);
   const usedIds = [lead.id, ...secondary.map((a) => a.id)];
-  const latest = getLatestArticles(5, usedIds);
-  const categories = getAllCategories();
+  const latest = await getLatestArticles(5, usedIds);
+  const categories = await getAllCategories();
+  const categorySections = await Promise.all(
+    categories.map(async (c, idx) => ({
+      category: c,
+      items: (await getArticlesByCategory(c.slug)).slice(0, idx % 2 === 0 ? 3 : 4),
+    }))
+  );
 
   return (
     <>
@@ -78,8 +84,7 @@ export default function HomePage() {
       </section>
 
       {/* Category sections */}
-      {categories.map((c, idx) => {
-        const items = getArticlesByCategory(c.slug).slice(0, idx % 2 === 0 ? 3 : 4);
+      {categorySections.map(({ category: c, items }, idx) => {
         if (items.length === 0) return null;
         const [first, ...rest] = items;
         return (

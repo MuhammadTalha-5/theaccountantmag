@@ -4,8 +4,8 @@ import Container from "@/components/ui/Container";
 import CategoryArticleList from "@/components/article/CategoryArticleList";
 import { getAllCategories, getArticlesByCategory, getCategoryBySlug } from "@/lib/api";
 
-export function generateStaticParams() {
-  return getAllCategories().map((c) => ({ slug: c.slug }));
+export async function generateStaticParams() {
+  return (await getAllCategories()).map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({
@@ -14,7 +14,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const category = getCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug);
   if (!category) return {};
   return { title: category.name, description: category.description };
 }
@@ -25,10 +25,10 @@ export default async function CategoryPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const category = getCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug);
   if (!category) notFound();
 
-  const articles = getArticlesByCategory(slug);
+  const articles = await getArticlesByCategory(slug);
 
   return (
     <Container className="pt-10">

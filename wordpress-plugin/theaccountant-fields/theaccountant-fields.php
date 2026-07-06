@@ -12,6 +12,45 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /* -------------------------------------------------------------------------
+ * Redirect all public front-end traffic to the headless frontend.
+ *
+ * template_redirect only runs for normal front-end page views, so this
+ * never touches: /wp-admin, /wp-login.php, /graphql, /wp-json (REST),
+ * admin-ajax.php, cron, or directly-served files like /wp-content/uploads.
+ * ---------------------------------------------------------------------- */
+define( 'TA_FRONTEND_URL', 'https://theaccountantmag.com' );
+
+add_action( 'template_redirect', function () {
+	// Extra safety: never redirect logged-in editors previewing content.
+	if ( is_user_logged_in() && is_preview() ) {
+		return;
+	}
+
+	// Map known content URLs to their frontend equivalents; everything
+	// else goes to the homepage.
+	$target = TA_FRONTEND_URL;
+
+	if ( is_singular( 'post' ) ) {
+		$target .= '/article/' . get_post_field( 'post_name', get_queried_object_id() );
+	} elseif ( is_category() ) {
+		$cat = get_queried_object();
+		if ( $cat && ! is_wp_error( $cat ) ) {
+			$target .= '/category/' . $cat->slug;
+		}
+	} elseif ( is_author() ) {
+		$author = get_queried_object();
+		if ( $author ) {
+			$target .= '/author/' . $author->user_nicename;
+		}
+	} elseif ( is_search() ) {
+		$target .= '/search';
+	}
+
+	wp_redirect( $target, 301 );
+	exit;
+} );
+
+/* -------------------------------------------------------------------------
  * Admin notice if ACF is missing
  * ---------------------------------------------------------------------- */
 add_action( 'admin_notices', function () {

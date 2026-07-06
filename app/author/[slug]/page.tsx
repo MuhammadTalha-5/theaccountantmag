@@ -9,8 +9,8 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import ArticleCard from "@/components/article/ArticleCard";
 import { getAllAuthors, getArticlesByAuthor, getAuthorBySlug } from "@/lib/api";
 
-export function generateStaticParams() {
-  return getAllAuthors().map((a) => ({ slug: a.slug }));
+export async function generateStaticParams() {
+  return (await getAllAuthors()).map((a) => ({ slug: a.slug }));
 }
 
 export async function generateMetadata({
@@ -19,7 +19,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const author = getAuthorBySlug(slug);
+  const author = await getAuthorBySlug(slug);
   if (!author) return {};
   return { title: author.name, description: author.description };
 }
@@ -30,10 +30,10 @@ export default async function AuthorPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const author = getAuthorBySlug(slug);
+  const author = await getAuthorBySlug(slug);
   if (!author) notFound();
 
-  const articles = getArticlesByAuthor(slug);
+  const articles = await getArticlesByAuthor(slug);
   const iconClass =
     "rounded-full border border-ink-950/12 p-2.5 text-ink-500 transition-colors hover:border-ledger-700 hover:text-ledger-700 dark:border-ink-100/15 dark:text-ink-300 dark:hover:border-brass-400 dark:hover:text-brass-400";
 

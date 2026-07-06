@@ -2,8 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Clock } from "lucide-react";
 import CategoryBadge from "@/components/ui/CategoryBadge";
-import { formatDate } from "@/lib/api";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import type { Article } from "@/types";
 
 type Variant = "default" | "horizontal" | "compact" | "large";

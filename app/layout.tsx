@@ -32,12 +32,12 @@ export const metadata: Metadata = {
     "Independent journalism on audit, tax, technology and the business of the accounting profession.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const categories = getAllCategories();
+  const categories = await getAllCategories();
 
   return (
     <html
