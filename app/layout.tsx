@@ -4,7 +4,7 @@ import "./globals.css";
 import ThemeProvider from "@/components/layout/ThemeProvider";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { getAllCategories } from "@/lib/api";
+import { getNavItems } from "@/lib/api";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -37,7 +37,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const categories = await getAllCategories();
+  const navItems = await getNavItems();
 
   return (
     <html
@@ -52,11 +52,11 @@ export default async function RootLayout({
           >
             Skip to content
           </a>
-          <Header categories={categories} />
+          <Header items={navItems} />
           <main id="main-content" className="flex-1 pt-20">
             {children}
           </main>
-          <Footer categories={categories} />
+          <Footer items={navItems} />
         </ThemeProvider>
       </body>
     </html>

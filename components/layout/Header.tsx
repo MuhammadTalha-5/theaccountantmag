@@ -8,9 +8,9 @@ import { Menu, Moon, Search, Sun, X } from "lucide-react";
 import { useTheme } from "@/components/layout/ThemeProvider";
 import Container from "@/components/ui/Container";
 import { cn } from "@/lib/utils";
-import type { CategoryNode } from "@/types";
+import type { NavItem } from "@/types";
 
-export default function Header({ categories }: { categories: CategoryNode[] }) {
+export default function Header({ items }: { items: NavItem[] }) {
   const { dark, toggle } = useTheme();
   const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
@@ -80,12 +80,12 @@ export default function Header({ categories }: { categories: CategoryNode[] }) {
           {/* Desktop nav */}
           <nav aria-label="Primary" className="hidden lg:block">
             <ul className="flex items-center gap-6">
-              {categories.map((c) => {
-                const active = pathname === `/category/${c.slug}`;
+              {items.map((item) => {
+                const active = pathname === item.href;
                 return (
-                  <li key={c.slug}>
+                  <li key={item.href}>
                     <Link
-                      href={`/category/${c.slug}`}
+                      href={item.href}
                       className={cn(
                         "relative py-2 text-[0.82rem] font-medium uppercase tracking-[0.12em] transition-colors",
                         active
@@ -93,7 +93,7 @@ export default function Header({ categories }: { categories: CategoryNode[] }) {
                           : "text-ink-600 hover:text-ink-950 dark:text-ink-300 dark:hover:text-white"
                       )}
                     >
-                      {c.name}
+                      {item.label}
                       {active && (
                         <motion.span
                           layoutId="nav-underline"
@@ -157,13 +157,13 @@ export default function Header({ categories }: { categories: CategoryNode[] }) {
           >
             <Container className="py-4">
               <ul className="flex flex-col">
-                {categories.map((c) => (
-                  <li key={c.slug}>
+                {items.map((item) => (
+                  <li key={item.href}>
                     <Link
-                      href={`/category/${c.slug}`}
+                      href={item.href}
                       className="block border-b border-ink-950/5 py-3 font-display text-lg font-semibold dark:border-ink-100/5"
                     >
-                      {c.name}
+                      {item.label}
                     </Link>
                   </li>
                 ))}

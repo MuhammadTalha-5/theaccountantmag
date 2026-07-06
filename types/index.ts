@@ -4,6 +4,11 @@
  * (e.g. `featuredImage.node.sourceUrl` matches WPGraphQL's MediaItem shape.)
  */
 
+export interface NavItem {
+  label: string;
+  href: string;
+}
+
 export interface MediaItem {
   node: {
     sourceUrl: string;

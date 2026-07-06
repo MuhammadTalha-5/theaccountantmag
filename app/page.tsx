@@ -5,11 +5,11 @@ import NewsletterSignup from "@/components/ui/NewsletterSignup";
 import HeroStory from "@/components/article/HeroStory";
 import ArticleCard from "@/components/article/ArticleCard";
 import {
-  getAllCategories,
   getArticlesByCategory,
   getEditorsPicks,
   getLatestArticles,
   getLeadStory,
+  getNavCategories,
   getSecondaryFeatures,
 } from "@/lib/api";
 
@@ -19,7 +19,7 @@ export default async function HomePage() {
   const picks = await getEditorsPicks(4);
   const usedIds = [lead.id, ...secondary.map((a) => a.id)];
   const latest = await getLatestArticles(5, usedIds);
-  const categories = await getAllCategories();
+  const categories = await getNavCategories();
   const categorySections = await Promise.all(
     categories.map(async (c, idx) => ({
       category: c,

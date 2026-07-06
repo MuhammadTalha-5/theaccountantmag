@@ -1,5 +1,5 @@
 import { cache } from "react";
-import type { Article, Author, CategoryNode, TeamMember } from "@/types";
+import type { Article, Author, CategoryNode, NavItem, TeamMember } from "@/types";
 import { articles as mockArticles } from "./data/articles";
 import { authors as mockAuthors } from "./data/authors";
 import { categories as mockCategories } from "./data/categories";
@@ -10,6 +10,7 @@ import {
   wpGetArticleBySlug,
   wpGetAuthors,
   wpGetCategories,
+  wpGetPrimaryMenu,
   wpGetTeamMembers,
 } from "./wp";
 
@@ -41,6 +42,40 @@ export const getAllAuthors = cache(async (): Promise<Author[]> => {
 
 export const getTeamMembers = cache(async (): Promise<TeamMember[]> => {
   return wpConfigured ? wpGetTeamMembers() : mockTeam;
+});
+
+/**
+ * Header/footer navigation.
+ * Uses the WordPress menu assigned to the "Primary Menu" location when one
+ * exists; otherwise falls back to the category list. Managing the menu in
+ * WP Admin → Appearance → Menus controls exactly what appears (and hides
+ * the un-deletable default category).
+ */
+export const getNavItems = cache(async (): Promise<NavItem[]> => {
+  if (wpConfigured) {
+    const menu = await wpGetPrimaryMenu();
+    if (menu) return menu;
+  }
+  return (await getAllCategories()).map((c) => ({
+    label: c.name,
+    href: `/category/${c.slug}`,
+  }));
+});
+
+/**
+ * Categories surfaced as homepage sections — driven by the nav menu, so
+ * curating the menu also curates the homepage. Falls back to all categories.
+ */
+export const getNavCategories = cache(async (): Promise<CategoryNode[]> => {
+  const [navItems, categories] = await Promise.all([getNavItems(), getAllCategories()]);
+  const navSlugs = navItems
+    .map((i) => i.href.match(/^\/category\/([^/]+)$/)?.[1])
+    .filter((s): s is string => Boolean(s));
+  if (navSlugs.length === 0) return categories;
+  // Preserve menu order.
+  return navSlugs
+    .map((slug) => categories.find((c) => c.slug === slug))
+    .filter((c): c is CategoryNode => Boolean(c));
 });
 
 export async function getArticleBySlug(slug: string): Promise<Article | undefined> {

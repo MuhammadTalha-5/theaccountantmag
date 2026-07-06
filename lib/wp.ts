@@ -1,4 +1,4 @@
-import type { Article, Author, CategoryNode, TeamMember } from "@/types";
+import type { Article, Author, CategoryNode, NavItem, TeamMember } from "@/types";
 
 /**
  * WPGraphQL data layer.
@@ -132,6 +132,14 @@ const TEAM_QUERY = `
   }
 `;
 
+const MENU_QUERY = `
+  query PrimaryMenu {
+    menuItems(where: { location: PRIMARY }, first: 32) {
+      nodes { id label uri parentId }
+    }
+  }
+`;
+
 /* ---------------------------------------------------------------------- */
 /* Mappers: WPGraphQL shapes → app types                                   */
 /* ---------------------------------------------------------------------- */
@@ -238,6 +246,35 @@ export async function wpGetCategories(): Promise<CategoryNode[]> {
 export async function wpGetAuthors(): Promise<Author[]> {
   const data = await wpFetch<{ users: { nodes: unknown[] } }>(AUTHORS_QUERY);
   return (data.users?.nodes ?? []).map(mapAuthor);
+}
+
+/**
+ * Header/footer navigation from the WP menu assigned to the
+ * "Primary Menu (frontend header)" location. Returns null when no menu
+ * is assigned so callers can fall back to the category list.
+ */
+export async function wpGetPrimaryMenu(): Promise<NavItem[] | null> {
+  try {
+    const data = await wpFetch<{
+      menuItems: {
+        nodes: { id: string; label: string; uri: string; parentId: string | null }[];
+      };
+    }>(MENU_QUERY);
+
+    const items = (data.menuItems?.nodes ?? [])
+      .filter((n) => !n.parentId) // top level only
+      .map((n) => ({
+        label: n.label,
+        // WP returns path-style uris ("/category/economy/") for internal
+        // links and absolute URLs for custom links — keep both usable.
+        href: n.uri?.startsWith("http") ? n.uri : (n.uri ?? "/").replace(/\/$/, "") || "/",
+      }));
+
+    return items.length > 0 ? items : null;
+  } catch {
+    // Menu location not registered / no menu assigned — fall back.
+    return null;
+  }
 }
 
 export async function wpGetTeamMembers(): Promise<TeamMember[]> {

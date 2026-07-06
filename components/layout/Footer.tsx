@@ -3,11 +3,11 @@ import { Mail, Rss } from "lucide-react";
 import { LinkedinIcon, XTwitterIcon } from "@/components/ui/SocialIcons";
 import Container from "@/components/ui/Container";
 import NewsletterSignup from "@/components/ui/NewsletterSignup";
-import type { CategoryNode } from "@/types";
+import type { NavItem } from "@/types";
 
 const year = new Date().getFullYear();
 
-export default function Footer({ categories }: { categories: CategoryNode[] }) {
+export default function Footer({ items }: { items: NavItem[] }) {
   return (
     <footer className="mt-24 border-t border-ink-950/10 bg-ink-950 text-ink-200 dark:border-ink-100/10">
       <Container className="py-14">
@@ -60,13 +60,13 @@ export default function Footer({ categories }: { categories: CategoryNode[] }) {
               Sections
             </h2>
             <ul className="mt-4 space-y-2.5 text-sm">
-              {categories.map((c) => (
-                <li key={c.slug}>
+              {items.map((item) => (
+                <li key={item.href}>
                   <Link
-                    href={`/category/${c.slug}`}
+                    href={item.href}
                     className="transition-colors hover:text-paper"
                   >
-                    {c.name}
+                    {item.label}
                   </Link>
                 </li>
               ))}
