@@ -37,24 +37,24 @@ export default function Logo({
   className?: string;
 }) {
   return (
-    <span className={cn("flex items-center gap-2.5", className)}>
+    <span className={cn("flex items-center gap-2 md:gap-2.5", className)}>
       <LogoMark
         className={cn(
           "shrink-0 transition-all duration-300",
           tagline
             ? compact
-              ? "h-8 w-8"
-              : "h-10 w-10 md:h-11 md:w-11"
+              ? "h-7 w-7 md:h-8 md:w-8"
+              : "h-8 w-8 md:h-11 md:w-11"
             : compact
-              ? "h-7 w-7"
-              : "h-8 w-8 md:h-9 md:w-9"
+              ? "h-6 w-6 md:h-7 md:w-7"
+              : "h-7 w-7 md:h-9 md:w-9"
         )}
       />
       <span className="flex flex-col">
         <span
           className={cn(
             "font-display font-bold leading-none tracking-tight transition-all duration-300",
-            compact ? "text-xl" : "text-2xl md:text-[1.7rem]"
+            compact ? "text-base md:text-xl" : "text-lg md:text-[1.7rem]"
           )}
         >
           The&nbsp;Accountant
@@ -64,8 +64,8 @@ export default function Logo({
             className={cn(
               "font-semibold uppercase text-brass-500 transition-all duration-300",
               compact
-                ? "mt-1 text-[0.48rem] tracking-[0.24em]"
-                : "mt-1.5 text-[0.55rem] tracking-[0.3em]"
+                ? "mt-0.5 text-[0.38rem] tracking-[0.2em] md:mt-1 md:text-[0.48rem] md:tracking-[0.24em]"
+                : "mt-1 text-[0.42rem] tracking-[0.22em] md:mt-1.5 md:text-[0.55rem] md:tracking-[0.3em]"
             )}
           >
             Beyond the Balance Sheet
