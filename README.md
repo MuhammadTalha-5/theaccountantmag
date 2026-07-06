@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# The Accountant — Magazine Frontend
 
-## Getting Started
+A premium digital-magazine frontend for the accounting profession, built with
+Next.js (App Router), TypeScript, Tailwind CSS v4 and Framer Motion.
 
-First, run the development server:
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Pages
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+| Route | Description |
+| --- | --- |
+| `/` | Homepage — hero lead story, featured grid, Latest rail, Editor's Picks, category sections, newsletter |
+| `/category/[slug]` | Section listing with sort, grid/list toggle, load-more pagination |
+| `/article/[slug]` | Long-form article — reading progress bar, byline, share buttons, related stories |
+| `/team` | About the magazine + editorial alternating team layout |
+| `/author/[slug]` | Author bio + their articles |
+| `/search` | Archive search UI (client-side over mock data) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Architecture
 
-## Learn More
+```
+app/                     Routes (App Router, all typed)
+components/
+  layout/                Header (sticky, hide-on-scroll), Footer, ThemeProvider
+  ui/                    Container, SectionHeading, Reveal, Skeletons, Newsletter, Search
+  article/               ArticleCard (4 variants), HeroStory, ReadingProgress, ShareButtons
+  team/                  TeamMemberCard (alternating editorial layout)
+lib/
+  api.ts                 Data-access layer — each function maps 1:1 to a future WPGraphQL query
+  data/                  Mock content: articles, authors, team, categories
+types/                   Content types mirroring WPGraphQL shapes
+public/images/           Locally generated abstract placeholder art
+```
 
-To learn more about Next.js, take a look at the following resources:
+## WPGraphQL migration path
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Mock data intentionally mirrors WPGraphQL response shapes:
+`featuredImage.node.sourceUrl`, `author.node`, `categories.nodes`,
+`tags.nodes`, HTML-string `content`. To go live, replace the function bodies
+in `lib/api.ts` with GraphQL queries — call sites stay untouched.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Design system
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Fonts:** Fraunces (display), Newsreader (body serif), Archivo (UI sans) via `next/font`
+- **Palette:** ink navy `#101820`, ledger green `#175243`, brass `#C29A3B`, paper `#FAF7F0`
+- **Dark mode:** class strategy, toggled via React state (`ThemeProvider`) — no localStorage yet
+- **Motion:** Framer Motion — scroll reveals, header hide/reveal, layout animations; respects `prefers-reduced-motion`

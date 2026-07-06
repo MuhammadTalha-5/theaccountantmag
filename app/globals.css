@@ -1,26 +1,105 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:where(.dark, .dark *));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  /* ——— The Accountant brand palette ——— */
+  --color-ink-50: #f4f6f5;
+  --color-ink-100: #e3e8e6;
+  --color-ink-200: #c5cfcb;
+  --color-ink-300: #9dada7;
+  --color-ink-400: #718680;
+  --color-ink-500: #556b65;
+  --color-ink-600: #42544f;
+  --color-ink-700: #374542;
+  --color-ink-800: #2b3634;
+  --color-ink-900: #1c2422;
+  --color-ink-950: #101820;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-ledger-50: #effaf4;
+  --color-ledger-100: #d8f3e3;
+  --color-ledger-200: #b4e6cb;
+  --color-ledger-300: #83d1ad;
+  --color-ledger-400: #4fb58a;
+  --color-ledger-500: #2d9970;
+  --color-ledger-600: #1e7b5a;
+  --color-ledger-700: #175243;
+  --color-ledger-800: #164e3f;
+  --color-ledger-900: #134035;
+  --color-ledger-950: #0a241e;
+
+  --color-brass-50: #fbf7ec;
+  --color-brass-100: #f5ebcd;
+  --color-brass-200: #ebd69d;
+  --color-brass-300: #dfbc65;
+  --color-brass-400: #d4a63e;
+  --color-brass-500: #c29a3b;
+  --color-brass-600: #a67527;
+  --color-brass-700: #855722;
+  --color-brass-800: #6f4622;
+  --color-brass-900: #603b21;
+  --color-brass-950: #371e10;
+
+  --color-paper: #faf7f0;
+  --color-paper-dark: #f2ede2;
+
+  --font-display: var(--font-fraunces);
+  --font-serif: var(--font-newsreader);
+  --font-sans: var(--font-archivo);
+
+  --animate-shimmer: shimmer 1.8s ease-in-out infinite;
+
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
   }
 }
 
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-paper text-ink-950 antialiased dark:bg-ink-950 dark:text-ink-100;
+  font-family: var(--font-sans);
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+::selection {
+  @apply bg-ledger-700 text-paper;
+}
+
+/* Editorial long-form typography */
+.prose-editorial {
+  @apply prose prose-lg max-w-none
+    prose-headings:font-display prose-headings:font-semibold prose-headings:tracking-tight
+    prose-p:font-serif prose-p:text-[1.175rem] prose-p:leading-[1.85]
+    prose-a:text-ledger-700 prose-a:decoration-brass-400 prose-a:underline-offset-4
+    prose-blockquote:border-l-brass-500 prose-blockquote:font-display
+    prose-blockquote:text-2xl prose-blockquote:not-italic prose-blockquote:leading-snug
+    prose-strong:text-inherit
+    dark:prose-invert dark:prose-a:text-ledger-300;
+  color: inherit;
+}
+
+.prose-editorial > p:first-of-type::first-letter {
+  @apply float-left mr-3 mt-1 font-display text-[4.6rem] font-bold leading-[0.75] text-ledger-700 dark:text-brass-400;
+}
+
+/* Hide scrollbar for horizontal category rows */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Focus visibility */
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-brass-500;
 }
